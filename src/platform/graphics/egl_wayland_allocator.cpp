@@ -21,6 +21,7 @@
 
 #include <boost/throw_exception.hpp>
 #include <mutex>
+#include <string.h>
 
 #include "mir/graphics/egl_extensions.h"
 #include "mir/graphics/egl_error.h"
@@ -270,6 +271,12 @@ void mg::wayland::bind_display(EGLDisplay egl_dpy, wl_display* wayland_dpy, EGLE
     if (!extensions.wayland)
     {
         BOOST_THROW_EXCEPTION((std::runtime_error{"No EGL_WL_bind_wayland_display support"}));
+    }
+
+    auto const* display_extensions = eglQueryString(egl_dpy, EGL_EXTENSIONS);
+    if (!display_extensions || !strstr(display_extensions, "EGL_WL_bind_wayland_display"))
+    {
+        BOOST_THROW_EXCEPTION((std::runtime_error{"EGL display does not support Wayland"}));
     }
 
     if (extensions.wayland->eglBindWaylandDisplayWL(egl_dpy, wayland_dpy) == EGL_FALSE)
