@@ -294,7 +294,15 @@ void mgg::BufferAllocator::bind_display(wl_display* display, std::shared_ptr<Exe
         [this]() { ctx->release_current(); });
     auto dpy = eglGetCurrentDisplay();
 
-    mg::wayland::bind_display(dpy, display, *egl_extensions);
+    try
+    {
+        mg::wayland::bind_display(dpy, display, *egl_extensions);
+    }
+    catch (std::exception const& ex)
+    {
+        log_error("Could not bind EGL display, falling back to software rendering: %s", ex.what());
+    }
+    // TODO: Shoud we still try dmabuf if EGL fails?
 
     try
     {

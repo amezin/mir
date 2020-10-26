@@ -33,6 +33,7 @@
 #include "mir/executor.h"
 #include "mir/graphics/program_factory.h"
 #include "mir/graphics/program.h"
+#include "mir/log.h"
 
 #include <GLES2/gl2.h>
 
